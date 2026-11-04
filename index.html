@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard KPI Kerjaya & Kebolehpasaran Graduan — PTSN 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1a2340;font-size:14px}
+.header{background:linear-gradient(135deg,#003087 0%,#0055b3 60%,#0077cc 100%);color:#fff}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;gap:12px}
+.logo-box img{height:80px;object-fit:contain;background:#fff;border-radius:8px;padding:5px;display:block}
+.header-title{text-align:center;flex:1}
+.header-title h1{font-size:17px;font-weight:700;line-height:1.3}
+.header-title h2{font-size:12px;font-weight:400;opacity:.85;margin-top:3px}
+.header-title .sub{font-size:11px;opacity:.65;margin-top:2px}
+.header-bar{background:rgba(0,0,0,.18);display:flex;justify-content:center;gap:28px;padding:7px 28px;font-size:11px;flex-wrap:wrap}
+.header-bar strong{color:#ffd700}
+.breadcrumb{background:#fff;border-bottom:1px solid #dde4f0;padding:7px 28px;font-size:12px;color:#667;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.breadcrumb a{color:#003087;cursor:pointer;text-decoration:none;font-weight:600}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb .sep{color:#bbb}
+.nav-tabs{background:#fff;border-bottom:2px solid #e0e7ef;display:flex;padding:0 24px;overflow-x:auto}
+.nav-tab{padding:10px 16px;cursor:pointer;font-size:12px;font-weight:600;border-bottom:3px solid transparent;color:#556;white-space:nowrap;transition:all .2s}
+.nav-tab:hover{color:#003087;background:#f5f8ff}
+.nav-tab.active{color:#003087;border-bottom-color:#003087;background:#f0f5ff}
+.page{display:none}
+.page.active{display:block}
+.main{padding:18px 28px;max-width:1260px;margin:0 auto}
+.formula-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 16px;margin-bottom:16px}
+.formula-box .f-eq{font-size:14px;font-weight:700;color:#b45309;text-align:center;padding:5px 0 3px}
+.formula-box .f-note{font-size:11px;color:#78350f;text-align:center}
+.cards-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.card{background:#fff;border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,80,.07);border-top:4px solid #003087;text-align:center;position:relative}
+.card.clickable{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.card.clickable:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,80,.13)}
+.card.clickable::after{content:"→";position:absolute;bottom:7px;right:11px;font-size:13px;color:#aab}
+.card.green{border-top-color:#16a34a}
+.card.amber{border-top-color:#d97706}
+.card.blue{border-top-color:#0077cc}
+.card-num{font-size:26px;font-weight:800;color:#003087;line-height:1.1}
+.card.green .card-num{color:#16a34a}
+.card.amber .card-num{color:#d97706}
+.card.blue .card-num{color:#0077cc}
+.card-label{font-size:11px;color:#667;margin-top:4px;line-height:1.5}
+.card-hint{font-size:10px;color:#0077cc;margin-top:3px;font-style:italic}
+.panel{background:#fff;border-radius:10px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,80,.07);margin-bottom:16px}
+.panel-title{font-size:14px;font-weight:700;color:#003087;border-bottom:2px solid #e0e7ef;padding-bottom:8px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.act-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:4px}
+.act-card{border-radius:9px;padding:14px 16px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.act-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,80,.13)}
+.act-card .act-tag{font-size:10px;font-weight:700;text-transform:uppercase;opacity:.7;margin-bottom:3px}
+.act-card .act-name{font-size:12px;font-weight:700;line-height:1.4;margin-bottom:5px}
+.act-card .act-num{font-size:28px;font-weight:800;line-height:1}
+.act-card .act-kpi{font-size:12px;margin-top:2px;opacity:.85}
+.act-card .act-arrow{position:absolute;right:12px;bottom:12px;font-size:18px;opacity:.35}
+.act-card.green{background:linear-gradient(135deg,#f0fdf4,#dcfce7);color:#14532d;border:1px solid #bbf7d0}
+.act-card.blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);color:#1e3a8a;border:1px solid #bfdbfe}
+.act-card.amber{background:linear-gradient(135deg,#fffbeb,#fef3c7);color:#78350f;border:1px solid #fde68a}
+.act-card.purple{background:linear-gradient(135deg,#faf5ff,#ede9fe);color:#3b0764;border:1px solid #ddd6fe}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:#003087;color:#fff}
+thead th{padding:8px 10px;text-align:left;font-weight:600;font-size:11px}
+tbody tr:nth-child(even){background:#f5f8ff}
+tbody tr:hover{background:#e8f0fe}
+tbody td{padding:7px 10px;border-bottom:1px solid #e5e9f0}
+tfoot td{padding:8px 10px;font-weight:700;background:#f0fdf4;border-top:2px solid #16a34a}
+.badge{display:inline-block;padding:2px 8px;border-radius:11px;font-size:10px;font-weight:600}
+.bg{background:#dcfce7;color:#15803d}
+.bb{background:#dbeafe;color:#1d4ed8}
+.ba{background:#fef3c7;color:#b45309}
+.bp{background:#ede9fe;color:#6d28d9}
+.bgr{background:#f1f5f9;color:#475569}
+.tr-link{cursor:pointer}
+.tr-link:hover td{background:#dbeafe !important}
+.search-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.search-bar input,.search-bar select{padding:6px 11px;border:1px solid #c9d5e8;border-radius:6px;font-size:12px;color:#334;outline:none}
+.search-bar input{flex:1;min-width:180px}
+.search-bar select{min-width:140px}
+.search-bar .count{font-size:11px;color:#556;white-space:nowrap;background:#eff6ff;padding:4px 10px;border-radius:6px}
+.btn-back{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;background:#003087;color:#fff;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;margin-bottom:14px}
+.btn-back:hover{background:#0055b3}
+.year-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.year-btn{padding:4px 14px;border-radius:18px;border:2px solid #003087;background:#fff;color:#003087;font-size:12px;font-weight:700;cursor:pointer}
+.year-btn:hover,.year-btn.active{background:#003087;color:#fff}
+.cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cal-month{background:#f5f8ff;border-radius:7px;padding:8px;border:1px solid #d0daf0}
+.cal-mname{font-size:10px;font-weight:700;background:#003087;color:#fff;border-radius:4px;padding:3px 6px;margin-bottom:6px;text-align:center}
+.ev{font-size:10px;padding:3px 6px;border-radius:4px;margin-bottom:3px;line-height:1.4;cursor:pointer}
+.ev:hover{opacity:.8}
+.ev.pk{background:#dcfce7;color:#15803d;border-left:3px solid #16a34a}
+.ev.ik{background:#dbeafe;color:#1d4ed8;border-left:3px solid #2563eb}
+.ev.ut{background:#fef3c7;color:#b45309;border-left:3px solid #d97706}
+.ev.au{background:#ede9fe;color:#6d28d9;border-left:3px solid #7c3aed}
+.ev-nil{font-size:10px;color:#bbb;font-style:italic}
+.tt th{background:#003087;color:#fff;padding:8px 10px;text-align:center;font-size:11px}
+.tt td{padding:7px 10px;text-align:center;border-bottom:1px solid #e0e7ef;font-size:12px}
+.tt tr:nth-child(even) td{background:#f5f8ff}
+.tt .tr-link:hover td{background:#dbeafe !important}
+.kge{color:#16a34a;font-weight:700}
+.kpl{color:#0077cc;font-weight:700}
+.chart-wrap{display:flex;align-items:flex-end;gap:12px;height:180px;padding:6px 6px 0}
+.bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end}
+.bar-block{width:100%;border-radius:6px 6px 0 0;min-height:3px;cursor:pointer;transition:filter .15s}
+.bar-block:hover{filter:brightness(1.12)}
+.bar-val{font-size:11px;font-weight:700;margin-bottom:2px}
+.bar-lbl{font-size:10px;color:#556;margin-top:4px;text-align:center;line-height:1.3}
+.info-box{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px}
+.info-green{background:#f0fdf4;border-left:4px solid #16a34a;color:#14532d}
+.info-blue{background:#eff6ff;border-left:4px solid #2563eb;color:#1e3a5f}
+.info-amber{background:#fffbeb;border-left:4px solid #d97706;color:#78350f}
+.kelas-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.kelas-btn{padding:4px 12px;border-radius:14px;border:1.5px solid #003087;background:#fff;color:#003087;font-size:11px;font-weight:700;cursor:pointer}
+.kelas-btn:hover,.kelas-btn.active{background:#003087;color:#fff}
+.stat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+.stat-item{background:#fff;border-radius:8px;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,80,.07);text-align:center;cursor:pointer;border-top:3px solid #003087}
+.stat-item:hover{box-shadow:0 3px 10px rgba(0,0,80,.13)}
+.stat-item .sn{font-size:20px;font-weight:800;color:#003087}
+.stat-item .sl{font-size:10px;color:#667;margin-top:1px}
+.prog-row{margin-bottom:11px}
+.prog-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;align-items:center}
+.prog-bar{height:14px;background:#e8edf5;border-radius:7px;overflow:hidden}
+.prog-fill{height:100%;border-radius:7px}
+.fill-green{background:linear-gradient(90deg,#16a34a,#22c55e)}
+.fill-blue{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.fill-amber{background:linear-gradient(90deg,#d97706,#fbbf24)}
+.fill-purple{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.fill-total{background:linear-gradient(90deg,#059669,#34d399)}
+.prog-link{cursor:pointer;padding:6px 8px;border-radius:7px;transition:background .15s}
+.prog-link:hover{background:#f0f5ff}
+.footer{text-align:center;padding:12px;font-size:11px;color:#889;border-top:1px solid #d0daf0;background:#fff;margin-top:4px}
+@media(max-width:768px){
+  .cards-row{grid-template-columns:repeat(2,1fr)}
+  .cal-grid{grid-template-columns:repeat(2,1fr)}
+  .act-grid{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:repeat(3,1fr)}
+  .header-top{flex-direction:column;text-align:center}
+  .main{padding:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo-box">
+      <img src="C:/Users/MOHE/Downloads/Logo kpt.png" alt="KPT" onerror="this.style.display='none'">
+    </div>
+    <div class="header-title">
+      <h1>DASHBOARD KPI KERJAYA &amp; KEBOLEHPASARAN GRADUAN</h1>
+      <h2>Politeknik Tun Syed Nasir, Malaysia</h2>
+      <div class="sub">Unit Kerjaya &amp; Kebolehpasaran &nbsp;|&nbsp; 2026 – 2030</div>
+    </div>
+    <div class="logo-box">
+      <img src="C:/Users/MOHE/Downloads/logo PTSN.png" alt="PTSN" onerror="this.style.display='none'">
+    </div>
+  </div>
+  <div class="header-bar">
+    <span>Pegawai: <strong>Kerjaya &amp; Kebolehpasaran Graduan</strong></span>
+    <span>KPI Sasaran: <strong>10% daripada Jumlah Pelajar Tahun Akhir</strong></span>
+    <span>Jumlah Pelajar: <strong>497 orang (6 Kelas)</strong></span>
+  </div>
+</div>
+
+<div class="breadcrumb" id="breadcrumb">
+  <a onclick="goPage('dashboard')">🏠 Dashboard</a>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="navTo('dashboard',this)">📊 Dashboard KPI</div>
+  <div class="nav-tab" onclick="navTo('aktiviti',this)">📋 Aktiviti 2026</div>
+  <div class="nav-tab" onclick="navTo('takwim',this)">📅 Takwim 2027–2030</div>
+  <div class="nav-tab" onclick="navTo('trend',this)">📈 Trend 2026–2030</div>
+  <div class="nav-tab" onclick="navTo('semua-pelajar',this)">🎓 Semua Pelajar (497)</div>
+</div>
+
+<!-- PAGE: DASHBOARD -->
+<div class="page active" id="page-dashboard">
+<div class="main">
+  <div class="formula-box">
+    <div class="f-eq">KPI (%) = Σ [ (Bil. Pelajar Setiap Aktiviti ÷ 497) × 10% ]</div>
+    <div class="f-note">Klik kad, aktiviti atau bar chart untuk lihat senarai pelajar yang terlibat</div>
+  </div>
+  <div class="cards-row">
+    <div class="card blue clickable" onclick="goPage('semua-pelajar')">
+      <div class="card-num">497</div>
+      <div class="card-label">Jumlah Pelajar<br>Tahun Akhir 2026</div>
+      <div class="card-hint">Klik → Lihat semua pelajar</div>
+    </div>
+    <div class="card amber">
+      <div class="card-num">10%</div>
+      <div class="card-label">KPI Sasaran<br>Min. yang Perlu Dicapai</div>
+    </div>
+    <div class="card green clickable" onclick="goPage('semua-pelajar')">
+      <div class="card-num">13.33%</div>
+      <div class="card-label">KPI Dicapai 2026<br>(4 Aktiviti Dijumlahkan)</div>
+      <div class="card-hint">Klik → Lihat penyertaan</div>
+    </div>
+    <div class="card green">
+      <div class="card-num">+3.33%</div>
+      <div class="card-label">Lebihan KPI<br>✅ Melebihi Sasaran</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">🏆 Aktiviti 2026 — Klik untuk lihat senarai pelajar terlibat</div>
+    <div class="act-grid">
+      <div class="act-card green" onclick="goListPelajar('PERKESO')">
+        <div class="act-tag">Program Kerjaya</div>
+        <div class="act-name">Program Kerjaya bersama PERKESO 2026</div>
+        <div class="act-num">75</div>
+        <div class="act-kpi">(75 ÷ 497) × 10% = <strong>1.51%</strong></div>
+        <div class="act-arrow">→</div>
+      </div>
+      <div class="act-card blue" onclick="goListPelajar('IKTBN')">
+        <div class="act-tag">Jemputan Luar</div>
+        <div class="act-name">Jemputan Program Kerjaya IKTBN Pagoh</div>
+        <div class="act-num">65</div>
+        <div class="act-kpi">(65 ÷ 497) × 10% = <strong>1.31%</strong></div>
+        <div class="act-arrow">→</div>
+      </div>
+      <div class="act-card amber" onclick="goListPelajar('UTEM')">
+        <div class="act-tag">Hari Kerjaya</div>
+        <div class="act-name">Program Hari Kerjaya UTEM</div>
+        <div class="act-num">68</div>
+        <div class="act-kpi">(68 ÷ 497) × 10% = <strong>1.37%</strong></div>
+        <div class="act-arrow">→</div>
+      </div>
+      <div class="act-card purple" onclick="goListPelajar('AURORA')">
+        <div class="act-tag">Program Dalaman</div>
+        <div class="act-name">AURORA 2026</div>
+        <div class="act-num">454</div>
+        <div class="act-kpi">(454 ÷ 497) × 10% = <strong>9.13%</strong></div>
+        <div class="act-arrow">→</div>
+      </div>
+    </div>
+    <div class="info-box info-green" style="margin-top:12px;">
+      ✅ <strong>JUMLAH KPI 2026:</strong> 1.51% + 1.31% + 1.37% + 9.13% = <strong>13.33%</strong>
+      &nbsp;|&nbsp; Sasaran: 10% &nbsp;|&nbsp; Lebihan: <strong>+3.33%</strong>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📊 Sumbangan KPI Setiap Aktiviti — Klik bar untuk lihat pelajar</div>
+    <div class="chart-wrap">
+      <div class="bar-col">
+        <div class="bar-val" style="color:#16a34a;">1.51%</div>
+        <div class="bar-block" onclick="goListPelajar('PERKESO')" style="height:16.5%;background:linear-gradient(180deg,#22c55e,#16a34a);" title="Pelajar PERKESO"></div>
+        <div class="bar-lbl">PERKESO<br><small>75 pelajar</small></div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" style="color:#2563eb;">1.31%</div>
+        <div class="bar-block" onclick="goListPelajar('IKTBN')" style="height:14.4%;background:linear-gradient(180deg,#60a5fa,#2563eb);" title="Pelajar IKTBN"></div>
+        <div class="bar-lbl">IKTBN<br><small>65 pelajar</small></div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" style="color:#d97706;">1.37%</div>
+        <div class="bar-block" onclick="goListPelajar('UTEM')" style="height:15%;background:linear-gradient(180deg,#fbbf24,#d97706);" title="Pelajar UTEM"></div>
+        <div class="bar-lbl">UTEM<br><small>68 pelajar</small></div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" style="color:#7c3aed;">9.13%</div>
+        <div class="bar-block" onclick="goListPelajar('AURORA')" style="height:100%;background:linear-gradient(180deg,#a78bfa,#7c3aed);" title="Pelajar AURORA"></div>
+        <div class="bar-lbl">AURORA<br><small>454 pelajar</small></div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" style="color:#dc2626;font-size:10px;">Min</div>
+        <div class="bar-block" style="height:109.5%;border:2px dashed #dc2626;background:#fff5f5;border-radius:6px 6px 0 0;cursor:default;"></div>
+        <div class="bar-lbl" style="color:#dc2626;"><strong>10%</strong><br><small>KPI Sasaran</small></div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" style="color:#059669;">13.33%</div>
+        <div class="bar-block" onclick="goPage('semua-pelajar')" style="height:146%;background:linear-gradient(180deg,#34d399,#059669);" title="Semua pelajar"></div>
+        <div class="bar-lbl" style="color:#059669;"><strong>JUMLAH</strong><br><small>✅ Tercapai</small></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:#0077cc;margin-top:5px;">💡 Klik mana-mana bar untuk lihat senarai pelajar program berkenaan</div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE: AKTIVITI -->
+<div class="page" id="page-aktiviti">
+<div class="main">
+  <div class="panel">
+    <div class="panel-title">📋 Jadual Aktiviti Intervensi Kerjaya 2026 — Klik baris untuk lihat pelajar</div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Nama Program</th><th>Rakan Pelaksana</th><th>Bil. Pelajar</th><th>Pengiraan KPI</th><th>KPI Sumbangan</th><th>KPI Kumulatif</th><th>Tindakan</th></tr>
+      </thead>
+      <tbody>
+        <tr class="tr-link" onclick="goListPelajar('PERKESO')">
+          <td>1</td><td><strong>Program Kerjaya PERKESO 2026</strong></td><td>PERKESO</td><td><strong>75</strong></td>
+          <td style="font-family:monospace;">75 ÷ 497 × 10%</td><td><strong style="color:#16a34a;">1.51%</strong></td><td>1.51%</td>
+          <td><span class="badge bg">Lihat Pelajar →</span></td>
+        </tr>
+        <tr class="tr-link" onclick="goListPelajar('IKTBN')">
+          <td>2</td><td><strong>Jemputan Program Kerjaya IKTBN Pagoh</strong></td><td>IKTBN Pagoh</td><td><strong>65</strong></td>
+          <td style="font-family:monospace;">65 ÷ 497 × 10%</td><td><strong style="color:#2563eb;">1.31%</strong></td><td>2.82%</td>
+          <td><span class="badge bb">Lihat Pelajar →</span></td>
+        </tr>
+        <tr class="tr-link" onclick="goListPelajar('UTEM')">
+          <td>3</td><td><strong>Program Hari Kerjaya UTEM</strong></td><td>UTEM</td><td><strong>68</strong></td>
+          <td style="font-family:monospace;">68 ÷ 497 × 10%</td><td><strong style="color:#d97706;">1.37%</strong></td><td>4.19%</td>
+          <td><span class="badge ba">Lihat Pelajar →</span></td>
+        </tr>
+        <tr class="tr-link" onclick="goListPelajar('AURORA')">
+          <td>4</td><td><strong>AURORA 2026</strong></td><td>Politeknik (Dalaman)</td><td><strong>454</strong></td>
+          <td style="font-family:monospace;">454 ÷ 497 × 10%</td><td><strong style="color:#7c3aed;">9.13%</strong></td><td>13.33%</td>
+          <td><span class="badge bp">Lihat Pelajar →</span></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="text-align:right;">JUMLAH KPI</td><td>662</td><td>—</td>
+          <td colspan="2"><strong style="color:#16a34a;">13.33% ✅</strong></td>
+          <td><span class="badge bg" style="cursor:pointer;" onclick="goPage('semua-pelajar')">Semua Pelajar →</span></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:#0077cc;">💡 Klik mana-mana baris untuk lihat senarai pelajar yang terlibat dalam program tersebut.</div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE: TAKWIM -->
+<div class="page" id="page-takwim">
+<div class="main">
+  <div class="panel">
+    <div class="panel-title">📅 Takwim Program Kerjaya 2027–2030</div>
+    <div class="year-tabs">
+      <button class="year-btn active" onclick="showYear('2027',this)">2027</button>
+      <button class="year-btn" onclick="showYear('2028',this)">2028</button>
+      <button class="year-btn" onclick="showYear('2029',this)">2029</button>
+      <button class="year-btn" onclick="showYear('2030',this)">2030</button>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:11px;color:#444;">
+      <span><span style="display:inline-block;width:9px;height:9px;background:#16a34a;border-radius:2px;"></span> PERKESO</span>
+      <span><span style="display:inline-block;width:9px;height:9px;background:#2563eb;border-radius:2px;"></span> IKTBN</span>
+      <span><span style="display:inline-block;width:9px;height:9px;background:#d97706;border-radius:2px;"></span> UTEM</span>
+      <span><span style="display:inline-block;width:9px;height:9px;background:#7c3aed;border-radius:2px;"></span> AURORA</span>
+      <span style="color:#0077cc;font-style:italic;">💡 Klik program → rujuk senarai pelajar 2026</span>
+    </div>
+    <div id="cal-2027" class="year-cal">
+      <div class="info-box info-blue" style="margin-bottom:8px;"><strong>2027</strong> | Est. ~510 pelajar | KPI Unjuran: ~13.09%</div>
+      <div class="cal-grid">
+        <div class="cal-month"><div class="cal-mname">JAN</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">FEB</div><div class="ev pk" onclick="goListPelajar('PERKESO')">🤝 PERKESO<br><small>~75 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MAC</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">APR</div><div class="ev ik" onclick="goListPelajar('IKTBN')">🏫 IKTBN Pagoh<br><small>~65 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MEI</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">JUN</div><div class="ev ut" onclick="goListPelajar('UTEM')">🎓 Hari Kerjaya UTEM<br><small>~68 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">JUL</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">OGO</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">SEP</div><div class="ev au" onclick="goListPelajar('AURORA')">⭐ AURORA 2027<br><small>~460 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">OKT</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">NOV</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">DIS</div><div class="ev-nil">—</div></div>
+      </div>
+    </div>
+    <div id="cal-2028" class="year-cal" style="display:none;">
+      <div class="info-box info-blue" style="margin-bottom:8px;"><strong>2028</strong> | Est. ~520 pelajar | KPI Unjuran: ~13.21%</div>
+      <div class="cal-grid">
+        <div class="cal-month"><div class="cal-mname">JAN</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">FEB</div><div class="ev pk" onclick="goListPelajar('PERKESO')">🤝 PERKESO<br><small>~80 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MAC</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">APR</div><div class="ev ik" onclick="goListPelajar('IKTBN')">🏫 IKTBN Pagoh<br><small>~70 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MEI</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">JUN</div><div class="ev ut" onclick="goListPelajar('UTEM')">🎓 Hari Kerjaya UTEM<br><small>~72 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">JUL</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">OGO</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">SEP</div><div class="ev au" onclick="goListPelajar('AURORA')">⭐ AURORA 2028<br><small>~465 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">OKT</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">NOV</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">DIS</div><div class="ev-nil">—</div></div>
+      </div>
+    </div>
+    <div id="cal-2029" class="year-cal" style="display:none;">
+      <div class="info-box info-blue" style="margin-bottom:8px;"><strong>2029</strong> | Est. ~530 pelajar | KPI Unjuran: ~13.30%</div>
+      <div class="cal-grid">
+        <div class="cal-month"><div class="cal-mname">JAN</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">FEB</div><div class="ev pk" onclick="goListPelajar('PERKESO')">🤝 PERKESO<br><small>~85 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MAC</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">APR</div><div class="ev ik" onclick="goListPelajar('IKTBN')">🏫 IKTBN Pagoh<br><small>~75 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MEI</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">JUN</div><div class="ev ut" onclick="goListPelajar('UTEM')">🎓 Hari Kerjaya UTEM<br><small>~75 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">JUL</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">OGO</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">SEP</div><div class="ev au" onclick="goListPelajar('AURORA')">⭐ AURORA 2029<br><small>~470 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">OKT</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">NOV</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">DIS</div><div class="ev-nil">—</div></div>
+      </div>
+    </div>
+    <div id="cal-2030" class="year-cal" style="display:none;">
+      <div class="info-box info-blue" style="margin-bottom:8px;"><strong>2030</strong> | Est. ~540 pelajar | KPI Unjuran: ~13.48%</div>
+      <div class="cal-grid">
+        <div class="cal-month"><div class="cal-mname">JAN</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">FEB</div><div class="ev pk" onclick="goListPelajar('PERKESO')">🤝 PERKESO<br><small>~90 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MAC</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">APR</div><div class="ev ik" onclick="goListPelajar('IKTBN')">🏫 IKTBN Pagoh<br><small>~80 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">MEI</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">JUN</div><div class="ev ut" onclick="goListPelajar('UTEM')">🎓 Hari Kerjaya UTEM<br><small>~78 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">JUL</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">OGO</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">SEP</div><div class="ev au" onclick="goListPelajar('AURORA')">⭐ AURORA 2030<br><small>~480 pelajar</small></div></div>
+        <div class="cal-month"><div class="cal-mname">OKT</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">NOV</div><div class="ev-nil">—</div></div>
+        <div class="cal-month"><div class="cal-mname">DIS</div><div class="ev-nil">—</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE: TREND -->
+<div class="page" id="page-trend">
+<div class="main">
+  <div class="panel">
+    <div class="panel-title">📈 Trend KPI 2026–2030</div>
+    <div class="info-box info-amber" style="margin-bottom:10px;">📐 Formula: KPI (%) = Σ [ (Bil. pelajar aktiviti ÷ Jml pelajar tahun akhir) × 10% ]</div>
+    <table class="tt">
+      <thead>
+        <tr><th>Tahun</th><th>Pelajar Akhir</th><th>KPI Sasaran</th><th>PERKESO</th><th>IKTBN</th><th>UTEM</th><th>AURORA</th><th>Jumlah KPI</th><th>Lebihan</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr class="tr-link" onclick="goPage('semua-pelajar')">
+          <td><strong>2026</strong></td><td>497</td><td>10%</td>
+          <td>1.51%<br><small>(75)</small></td><td>1.31%<br><small>(65)</small></td><td>1.37%<br><small>(68)</small></td><td>9.13%<br><small>(454)</small></td>
+          <td class="kge">13.33%</td><td class="kge">+3.33%</td><td><span class="badge bg">✅ Aktual</span></td>
+        </tr>
+        <tr><td><strong>2027</strong></td><td>~510</td><td>10%</td><td>~1.47%</td><td>~1.27%</td><td>~1.33%</td><td>~9.02%</td><td class="kpl">~13.09%</td><td class="kpl">+3.09%</td><td><span class="badge bb">📅 Dirancang</span></td></tr>
+        <tr><td><strong>2028</strong></td><td>~520</td><td>10%</td><td>~1.54%</td><td>~1.35%</td><td>~1.38%</td><td>~8.94%</td><td class="kpl">~13.21%</td><td class="kpl">+3.21%</td><td><span class="badge bb">📅 Dirancang</span></td></tr>
+        <tr><td><strong>2029</strong></td><td>~530</td><td>10%</td><td>~1.60%</td><td>~1.42%</td><td>~1.42%</td><td>~8.87%</td><td class="kpl">~13.30%</td><td class="kpl">+3.30%</td><td><span class="badge bb">📅 Dirancang</span></td></tr>
+        <tr><td><strong>2030</strong></td><td>~540</td><td>10%</td><td>~1.67%</td><td>~1.48%</td><td>~1.44%</td><td>~8.89%</td><td class="kpl">~13.48%</td><td class="kpl">+3.48%</td><td><span class="badge bb">📅 Dirancang</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:#0077cc;">💡 Klik baris 2026 untuk lihat data pelajar sebenar.</div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE: SEMUA PELAJAR -->
+<div class="page" id="page-semua-pelajar">
+<div class="main">
+  <button class="btn-back" onclick="goBack()">← Kembali</button>
+
+  <div class="stat-grid">
+    <div class="stat-item" onclick="filterKelas('')" style="border-top-color:#003087;">
+      <div class="sn">497</div><div class="sl">Semua Pelajar</div>
+    </div>
+    <div class="stat-item" onclick="filterKelas('DPC')" style="border-top-color:#16a34a;">
+      <div class="sn" style="color:#16a34a;">85</div><div class="sl">DPC</div>
+    </div>
+    <div class="stat-item" onclick="filterKelas('DEI')" style="border-top-color:#2563eb;">
+      <div class="sn" style="color:#2563eb;">82</div><div class="sl">DEI</div>
+    </div>
+    <div class="stat-item" onclick="filterKelas('DCE')" style="border-top-color:#d97706;">
+      <div class="sn" style="color:#d97706;">84</div><div class="sl">DCE</div>
+    </div>
+    <div class="stat-item" onclick="filterKelas('DPE')" style="border-top-color:#7c3aed;">
+      <div class="sn" style="color:#7c3aed;">82</div><div class="sl">DPE</div>
+    </div>
+    <div class="stat-item" onclick="filterKelas('DFO')" style="border-top-color:#0891b2;">
+      <div class="sn" style="color:#0891b2;">80</div><div class="sl">DFO</div>
+    </div>
+  </div>
+  <div class="stat-grid" style="grid-template-columns:repeat(2,1fr)auto;margin-bottom:14px;">
+    <div class="stat-item" onclick="filterKelas('DTM')" style="border-top-color:#be185d;">
+      <div class="sn" style="color:#be185d;">84</div><div class="sl">DTM</div>
+    </div>
+    <div class="stat-item" onclick="goListPelajar('PERKESO')" style="border-top-color:#16a34a;">
+      <div class="sn" style="color:#16a34a;font-size:16px;">75</div><div class="sl">PERKESO 2026</div>
+    </div>
+    <div class="stat-item" onclick="goListPelajar('IKTBN')" style="border-top-color:#2563eb;">
+      <div class="sn" style="color:#2563eb;font-size:16px;">65</div><div class="sl">IKTBN Pagoh</div>
+    </div>
+    <div class="stat-item" onclick="goListPelajar('UTEM')" style="border-top-color:#d97706;">
+      <div class="sn" style="color:#d97706;font-size:16px;">68</div><div class="sl">UTEM</div>
+    </div>
+    <div class="stat-item" onclick="goListPelajar('AURORA')" style="border-top-color:#7c3aed;">
+      <div class="sn" style="color:#7c3aed;font-size:16px;">454</div><div class="sl">AURORA 2026</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title" id="listTitle">🎓 Senarai Pelajar Tahun Akhir 2026 — Semua (497 orang)</div>
+    <div class="search-bar">
+      <input id="cariPelajar" type="text" placeholder="🔍  Cari nama / no. matrik / no. KP..." oninput="tapisPelajar()">
+      <select id="filterKelasSelect" onchange="tapisPelajar()">
+        <option value="">Semua Kelas</option>
+        <option value="DPC">DPC — Pengurusan Catering</option>
+        <option value="DEI">DEI — Elektronik Industri</option>
+        <option value="DCE">DCE — Kejuruteraan Awam</option>
+        <option value="DPE">DPE — Pengurusan Elektrik</option>
+        <option value="DFO">DFO — Kewangan</option>
+        <option value="DTM">DTM — Teknologi Maklumat</option>
+      </select>
+      <select id="filterProgramSelect" onchange="tapisPelajar()">
+        <option value="">Semua Program</option>
+        <option value="PERKESO">PERKESO 2026</option>
+        <option value="IKTBN">IKTBN Pagoh</option>
+        <option value="UTEM">Hari Kerjaya UTEM</option>
+        <option value="AURORA">AURORA 2026</option>
+        <option value="TIADA">Tiada Program</option>
+      </select>
+      <span class="count" id="jumlahPapar">497 rekod</span>
+    </div>
+    <div style="overflow-x:auto;">
+    <table id="tblPelajar">
+      <thead>
+        <tr>
+          <th style="width:36px;">#</th>
+          <th>Nama Pelajar</th>
+          <th>No. Matrik</th>
+          <th>No. Kad Pengenalan</th>
+          <th>No. Telefon</th>
+          <th>Kelas</th>
+          <th>Program Disertai</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyPelajar"></tbody>
+    </table>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#888;">
+      ⚠️ Data dummy — sila kemaskini melalui fail Excel <em>senarai_pelajar_kerjaya_2026.xlsx</em>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="footer">
+  Dashboard KPI Kerjaya &amp; Kebolehpasaran Graduan &nbsp;|&nbsp; Politeknik Tun Syed Nasir &nbsp;|&nbsp; Kementerian Pendidikan Tinggi<br>
+  <span style="color:#bbb;">Dikemaskini: November 2026 &nbsp;|&nbsp; Made with IBM Bob</span>
+</div>
+
+<script>
+// =============================================
+// JANA DATA PELAJAR 497 ORANG (6 KELAS)
+// =============================================
+var NAMA_L = ["Ahmad","Muhammad","Mohd","Hafiz","Amirul","Haziq","Syafiq","Luqman","Harith","Izzuddin","Faiz","Afiq","Khairul","Muhamad","Hazwan","Aiman","Ariff","Alif","Danial","Irfan","Faris","Azri","Nizam","Razak","Ridhwan","Farhan","Haikal","Zafran","Asyraf","Hanif","Rashid","Hilmi","Sabri","Yazid","Najmi","Syazwan","Fikri","Zamri","Azlan","Zulkifli","Bakri","Nordin","Ghazali","Mustafa","Hakim","Shahril","Redzuan","Idris","Izzwan","Hafizuddin"];
+var NAMA_P = ["Nurul","Siti","Nur","Aina","Fatin","Nabilah","Syafiqah","Izzati","Husna","Liyana","Atiqah","Syahirah","Farhanah","Najwa","Zulaikha","Syarifah","Izzatul","Hanis","Izzah","Suraya","Maizura","Hazwani","Insyirah","Hidayah","Amira","Balqis","Dalila","Fatimah","Intan","Mastura","Norhanis","Putri","Qistina","Salwa","Tasnim","Umairah","Wardah","Eleena","Asiah","Hamidah","Jalilah","Khairina","Lailatul","Orkid","Rafidah","Rohani","Haslinda","Aini","Fauziah","Maisarah"];
+var KEL_L = ["bin Abdullah","bin Ahmad","bin Mohd Zain","bin Roslan","bin Kamarudin","bin Othman","bin Ismail","bin Hamid","bin Ramli","bin Sulaiman","bin Zulkifli","bin Hassan","bin Ibrahim","bin Nasir","bin Zulkarnain","bin Aziz","bin Shaharudin","bin Wahab","bin Nordin","bin Mohamad","bin Razali","bin Bakri","bin Johari","bin Razak","bin Zainal","bin Yusof","bin Mazlan","bin Ghazali","bin Mustafa","bin Rahmat","bin Salleh","bin Daud","bin Idris","bin Kassim","bin Mansor","bin Jaafar","bin Noor","bin Kadir","bin Latif","bin Basir","bin Harun","bin Omar","bin Talib","bin Tahir","bin Isa","bin Ali","bin Bakar","bin Nor","bin Zain","bin Yatim"];
+var KEL_P = ["binti Abdullah","binti Ahmad","binti Mohd Zain","binti Roslan","binti Kamarudin","binti Othman","binti Ismail","binti Hamid","binti Ramli","binti Sulaiman","binti Zulkifli","binti Hassan","binti Ibrahim","binti Nasir","binti Zulkarnain","binti Aziz","binti Shaharudin","binti Wahab","binti Nordin","binti Mohamad","binti Razali","binti Bakri","binti Johari","binti Razak","binti Zainal","binti Yusof","binti Mazlan","binti Ghazali","binti Mustafa","binti Rahmat","binti Salleh","binti Daud","binti Idris","binti Kassim","binti Mansor","binti Jaafar","binti Noor","binti Kadir","binti Latif","binti Basir","binti Harun","binti Omar","binti Talib","binti Tahir","binti Isa","binti Ali","binti Bakar","binti Nor","binti Zain","binti Yatim"];
+var PREFIX_TEL = ["011","012","013","014","016","017","018","019"];
+var KELAS_DEF = [
+  {kod:"DPC",nama:"Diploma Pengurusan Catering",bil:85},
+  {kod:"DEI",nama:"Diploma Elektronik Industri",bil:82},
+  {kod:"DCE",nama:"Diploma Kejuruteraan Awam",bil:84},
+  {kod:"DPE",nama:"Diploma Pengurusan Elektrik",bil:82},
+  {kod:"DFO",nama:"Diploma Kewangan",bil:80},
+  {kod:"DTM",nama:"Diploma Teknologi Maklumat",bil:84}
+];
+var WARNA_KELAS = {DPC:"bg",DEI:"bb",DCE:"ba",DPE:"bp",DFO:"bgr",DTM:"bgr"};
+var WARNA_PROG  = {PERKESO:"bg",IKTBN:"bb",UTEM:"ba",AURORA:"bp"};
+var LABEL_PROG  = {PERKESO:"PERKESO 2026",IKTBN:"IKTBN Pagoh",UTEM:"Hari Kerjaya UTEM",AURORA:"AURORA 2026"};
+
+// Seeded random untuk konsisten
+var _s = 42;
+function sr(n){ _s=(_s*1103515245+12345)&0x7fffffff; return _s%n; }
+function pad(n,l){ return String(n).padStart(l,'0'); }
+
+var dataPelajar = [];
+var idx = 0;
+var bil = 1;
+for(var ki=0;ki<KELAS_DEF.length;ki++){
+  var k = KELAS_DEF[ki];
+  for(var i=0;i<k.bil;i++){
+    var isL = sr(2)===0;
+    var nama = isL
+      ? NAMA_L[sr(NAMA_L.length)] + " " + KEL_L[sr(KEL_L.length)]
+      : NAMA_P[sr(NAMA_P.length)] + " " + KEL_P[sr(KEL_P.length)];
+    var th = 2003+sr(3);
+    var kp = pad(th-2000,2)+pad(1+sr(12),2)+"-"+pad(1+sr(16),2)+"-"+pad(1000+sr(8999),4);
+    var matrik = "PTSN/24/"+k.kod+"/"+pad(bil,3);
+    var tel = PREFIX_TEL[sr(8)]+"-"+pad(10000000+sr(89999999),8);
+
+    // Agihan program: AURORA 454 pelajar (idx 0-453), PERKESO 75 (idx 0-74), IKTBN 65 (idx 75-139), UTEM 68 (idx 140-207), baki tiada program
+    var programs = [];
+    if(idx < 454) programs.push("AURORA");
+    if(idx < 75)  programs.push("PERKESO");
+    if(idx >= 75 && idx < 140)  programs.push("IKTBN");
+    if(idx >= 140 && idx < 208) programs.push("UTEM");
+    var mainProg = programs.length > 0 ? programs[programs.length-1] : "TIADA";
+
+    dataPelajar.push({bil:bil, nama:nama, kelas:k.kod, namaKelas:k.nama, kp:kp, matrik:matrik, tel:tel, programs:programs, mainProg:mainProg});
+    bil++; idx++;
+  }
+}
+
+// =============================================
+// NAVIGATION
+// =============================================
+var navHistory = ['dashboard'];
+var prevPage = 'dashboard';
+
+function setNavActive(id){
+  var map={dashboard:0,aktiviti:1,takwim:2,trend:3,'semua-pelajar':4};
+  document.querySelectorAll('.nav-tab').forEach(function(t,i){ t.classList.toggle('active', i===map[id]); });
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-'+id).classList.add('active');
+}
+function setBreadcrumb(parts){
+  var bc=document.getElementById('breadcrumb');
+  var h='<a onclick="goPage(\'dashboard\')">🏠 Dashboard</a>';
+  parts.forEach(function(p,i){
+    h+='<span class="sep">›</span>';
+    if(i<parts.length-1) h+='<a onclick="goPage(\''+p.id+'\')">'+p.label+'</a>';
+    else h+='<span>'+p.label+'</span>';
+  });
+  bc.innerHTML=h;
+}
+function goPage(id){
+  prevPage = navHistory[navHistory.length-1]||'dashboard';
+  navHistory.push(id);
+  showPage(id); setNavActive(id);
+  var labels={dashboard:[],aktiviti:[{label:'Aktiviti 2026'}],takwim:[{label:'Takwim 2027–2030'}],trend:[{label:'Trend 2026–2030'}],'semua-pelajar':[{label:'Semua Pelajar'}]};
+  setBreadcrumb(labels[id]||[]);
+  if(id==='semua-pelajar'){ renderPelajar(dataPelajar,'',''); document.getElementById('filterKelasSelect').value=''; document.getElementById('filterProgramSelect').value=''; document.getElementById('cariPelajar').value=''; document.getElementById('listTitle').textContent='🎓 Senarai Pelajar Tahun Akhir 2026 — Semua (497 orang)'; }
+  window.scrollTo(0,0);
+}
+function navTo(id,el){
+  document.querySelectorAll('.nav-tab').forEach(function(t){ t.classList.remove('active'); }); el.classList.add('active');
+  prevPage=navHistory[navHistory.length-1]||'dashboard';
+  navHistory.push(id); showPage(id);
+  var labels={dashboard:[],aktiviti:[{label:'Aktiviti 2026'}],takwim:[{label:'Takwim 2027–2030'}],trend:[{label:'Trend 2026–2030'}],'semua-pelajar':[{label:'Semua Pelajar (497)'}]};
+  setBreadcrumb(labels[id]||[]);
+  if(id==='semua-pelajar'){ renderPelajar(dataPelajar,'',''); document.getElementById('filterKelasSelect').value=''; document.getElementById('filterProgramSelect').value=''; document.getElementById('cariPelajar').value=''; document.getElementById('listTitle').textContent='🎓 Senarai Pelajar Tahun Akhir 2026 — Semua (497 orang)'; }
+  window.scrollTo(0,0);
+}
+function goBack(){
+  if(navHistory.length>1) navHistory.pop();
+  var p=navHistory[navHistory.length-1]||'dashboard';
+  showPage(p); setNavActive(p);
+  var labels={dashboard:[],aktiviti:[{label:'Aktiviti 2026'}],takwim:[{label:'Takwim'}],trend:[{label:'Trend'}],'semua-pelajar':[{label:'Semua Pelajar'}]};
+  setBreadcrumb(labels[p]||[]);
+  window.scrollTo(0,0);
+}
+function goListPelajar(prog){
+  prevPage=navHistory[navHistory.length-1]||'dashboard';
+  navHistory.push('semua-pelajar');
+  showPage('semua-pelajar'); setNavActive('semua-pelajar');
+  var filtered=dataPelajar.filter(function(p){ return p.programs.indexOf(prog)>=0; });
+  renderPelajar(filtered,prog,'');
+  document.getElementById('filterProgramSelect').value=prog;
+  document.getElementById('filterKelasSelect').value='';
+  document.getElementById('cariPelajar').value='';
+  var lbl=LABEL_PROG[prog]||prog;
+  document.getElementById('listTitle').textContent='🎓 Senarai Pelajar — '+lbl+' ('+filtered.length+' orang)';
+  setBreadcrumb([{label:prevLabel(prevPage),id:prevPage},{label:'Pelajar '+lbl}]);
+  window.scrollTo(0,0);
+}
+function filterKelas(kod){
+  prevPage=navHistory[navHistory.length-1]||'dashboard';
+  navHistory.push('semua-pelajar');
+  showPage('semua-pelajar'); setNavActive('semua-pelajar');
+  var filtered=kod?dataPelajar.filter(function(p){ return p.kelas===kod; }):dataPelajar;
+  renderPelajar(filtered,'',kod);
+  document.getElementById('filterKelasSelect').value=kod;
+  document.getElementById('filterProgramSelect').value='';
+  document.getElementById('cariPelajar').value='';
+  var lbl=kod||'Semua';
+  document.getElementById('listTitle').textContent='🎓 Senarai Pelajar Kelas '+lbl+' ('+filtered.length+' orang)';
+  setBreadcrumb(kod?[{label:'Kelas '+kod}]:[{label:'Semua Pelajar (497)'}]);
+  window.scrollTo(0,0);
+}
+function prevLabel(id){ var m={dashboard:'Dashboard KPI',aktiviti:'Aktiviti 2026',takwim:'Takwim',trend:'Trend'}; return m[id]||id; }
+
+// =============================================
+// RENDER TABLE
+// =============================================
+function renderPelajar(data, filterProg, filterKel){
+  var tbody=document.getElementById('tbodyPelajar');
+  var html='';
+  var kelasWarna={DPC:'bg',DEI:'bb',DCE:'ba',DPE:'bp',DFO:'bgr',DTM:'bgr'};
+  var kelasStyle={DPC:'color:#15803d',DEI:'color:#1d4ed8',DCE:'color:#b45309',DPE:'color:#6d28d9',DFO:'color:#0e7490',DTM:'color:#be185d'};
+  data.forEach(function(p,i){
+    var wKelas=kelasWarna[p.kelas]||'bgr';
+    var wProg=WARNA_PROG[p.mainProg]||'bgr';
+    var progBadges='';
+    if(p.programs.length===0) progBadges='<span class="badge bgr">Tiada</span>';
+    else p.programs.forEach(function(pr){ progBadges+='<span class="badge '+WARNA_PROG[pr]+'" style="margin-right:2px;">'+pr+'</span>'; });
+    var hl=(filterProg && p.programs.indexOf(filterProg)>=0)||(filterKel && p.kelas===filterKel);
+    html+='<tr'+(hl?' style="background:#fef9c3;"':'')+'>'
+      +'<td style="text-align:center;color:#888;">'+(i+1)+'</td>'
+      +'<td><strong>'+p.nama+'</strong></td>'
+      +'<td style="font-family:monospace;font-size:11px;">'+p.matrik+'</td>'
+      +'<td style="font-family:monospace;font-size:11px;">'+p.kp+'</td>'
+      +'<td style="font-family:monospace;font-size:11px;">'+p.tel+'</td>'
+      +'<td><span class="badge '+wKelas+'" style="'+kelasStyle[p.kelas]+';">'+p.kelas+'</span></td>'
+      +'<td>'+progBadges+'</td>'
+      +'</tr>';
+  });
+  tbody.innerHTML=html;
+  document.getElementById('jumlahPapar').textContent=data.length+' rekod';
+}
+
+function tapisPelajar(){
+  var cari=document.getElementById('cariPelajar').value.toLowerCase();
+  var klas=document.getElementById('filterKelasSelect').value;
+  var prog=document.getElementById('filterProgramSelect').value;
+  var hasil=dataPelajar.filter(function(p){
+    var cc=!cari||(p.nama.toLowerCase().includes(cari)||p.matrik.toLowerCase().includes(cari)||p.kp.includes(cari));
+    var ck=!klas||p.kelas===klas;
+    var cp=!prog||(prog==='TIADA'?p.programs.length===0:p.programs.indexOf(prog)>=0);
+    return cc&&ck&&cp;
+  });
+  renderPelajar(hasil,prog,klas);
+  var lbl=prog?(LABEL_PROG[prog]||prog):(klas?'Kelas '+klas:'Semua Pelajar');
+  document.getElementById('listTitle').textContent='🎓 Senarai '+lbl+' ('+hasil.length+' orang)';
+}
+
+function showYear(year,el){
+  document.querySelectorAll('.year-cal').forEach(function(c){ c.style.display='none'; });
+  document.querySelectorAll('.year-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('cal-'+year).style.display='block';
+  el.classList.add('active');
+}
+
+// Init
+renderPelajar(dataPelajar,'','');
+</script>
+</body>
+</html>
